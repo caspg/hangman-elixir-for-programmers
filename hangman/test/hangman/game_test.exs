@@ -20,6 +20,51 @@ defmodule Hangman.GameTest do
     end
   end
 
+  test "first occurance of letter is not already used" do
+    game = Game.new_game()
+    { game, _tally } = Game.make_move(game, "x")
+
+    assert game.game_state != :already_used
+  end
+
+  test "second occurance of letter is not already used" do
+    game = Game.new_game()
+    { game, _tally } = Game.make_move(game, "x")
+
+    assert game.game_state != :already_used
+
+    { game, _tally } = Game.make_move(game, "x")
+
+    assert game.game_state == :already_used
+  end
+
+  test "a good gues is recognized" do
+    game = Game.new_game("wibble")
+    { game, _tally } = Game.make_move(game, "w")
+
+    assert game.game_state == :good_guess
+    assert game.turns_left == 7
+  end
+
+  test "a guessed word is a won game" do
+    game = Game.new_game("wibble")
+    { game, _tally } = Game.make_move(game, "w")
+    assert game.game_state == :good_guess
+    assert game.turns_left == 7
+    { game, _tally } = Game.make_move(game, "i")
+    assert game.game_state == :good_guess
+    assert game.turns_left == 7
+    { game, _tally } = Game.make_move(game, "b")
+    assert game.game_state == :good_guess
+    assert game.turns_left == 7
+    { game, _tally } = Game.make_move(game, "l")
+    assert game.game_state == :good_guess
+    assert game.turns_left == 7
+    { game, _tally } = Game.make_move(game, "e")
+    assert game.game_state == :won
+    assert game.turns_left == 7
+  end
+
   defp lowercase_letters?(letters) do
     Enum.all?(letters, fn(letter) -> letter =~ ~r/[a-z]/  end)
   end
