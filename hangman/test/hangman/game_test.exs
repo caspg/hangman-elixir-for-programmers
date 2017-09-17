@@ -65,6 +65,27 @@ defmodule Hangman.GameTest do
     assert game.turns_left == 7
   end
 
+  test "a bad guess is recognized" do
+    game = Game.new_game("w")
+    { game, _tally } = Game.make_move(game, "x")
+
+    assert game.game_state == :bad_guess
+    assert game.turns_left == 6
+  end
+
+  test "lost game is recognized" do
+    game = Game.new_game("w")
+    { game, _tally } = Game.make_move(game, "x")
+    { game, _tally } = Game.make_move(game, "y")
+    { game, _tally } = Game.make_move(game, "z")
+    { game, _tally } = Game.make_move(game, "a")
+    { game, _tally } = Game.make_move(game, "b")
+    { game, _tally } = Game.make_move(game, "c")
+    { game, _tally } = Game.make_move(game, "d")
+
+    assert game.game_state == :lost
+  end
+
   defp lowercase_letters?(letters) do
     Enum.all?(letters, fn(letter) -> letter =~ ~r/[a-z]/  end)
   end
