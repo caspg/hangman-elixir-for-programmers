@@ -1,3 +1,0 @@
-<div class="jumbotron">
-  <%= plural_of("egg", 2) %>
-</div>
